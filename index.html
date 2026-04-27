@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シフト希望入力フォーム</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F6F3;
+  --surface: #FFFFFF;
+  --surface2: #F0EEE9;
+  --border: #E2DDD6;
+  --border2: #CBC5BC;
+  --text: #1A1814;
+  --text2: #6B6560;
+  --text3: #9E9890;
+  --accent: #2C5F2E;
+  --accent-bg: #EEF5EE;
+  --accent-border: #A8C8A8;
+  --warn: #7A4A00;
+  --warn-bg: #FFF4E0;
+  --warn-border: #DFBA80;
+  --danger: #7A1A1A;
+  --danger-bg: #FFF0F0;
+  --danger-border: #E8AAAA;
+  --blue: #1A3F6F;
+  --blue-bg: #EEF4FC;
+  --blue-border: #9ABDE0;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.page-wrap {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+.app-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.app-header .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.app-header .logo-icon {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.app-header .logo-icon svg { display: block; }
+.app-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+.app-header p {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.screen { display: none; }
+.screen.on { display: block; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.card + .card { margin-top: 12px; }
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+input[type=text] {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+input[type=text]:focus { border-color: var(--accent); }
+select {
+  padding: 9px 12px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236B6560' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+select:focus { border-color: var(--accent); }
+.ym-row { display: flex; gap: 8px; }
+.ym-row select { flex: 1; }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+.chip {
+  padding: 4px 12px;
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--surface2);
+  color: var(--text2);
+  transition: all 0.12s;
+  user-select: none;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.on {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text2);
+  transition: all 0.12s;
+  letter-spacing: 0.2px;
+}
+.btn:hover { background: var(--surface2); }
+.btn:active { transform: scale(0.98); }
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn.primary:hover { background: #244E26; }
+.btn.success {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+.btn.success:hover { background: #DCF0DC; }
+.btn-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+
+.form-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.form-hdr h2 { font-size: 16px; font-weight: 700; }
+.meta-pill {
+  font-size: 11px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.leg {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text2);
+}
+.legsq {
+  width: 13px; height: 13px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid;
+}
+
+.bulk-row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  align-items: center;
+}
+.bulk-row .lbl { font-size: 11px; color: var(--text3); font-weight: 700; margin-right: 2px; }
+.bbtn {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text2);
+  transition: all 0.12s;
+}
+.bbtn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+.day-grid { display: flex; flex-direction: column; gap: 2px; }
+.drow {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.drow.we { background: #FFFAF3; border-color: #EDD8A0; }
+.dlabel { font-size: 13px; font-weight: 700; white-space: nowrap; }
+.wd {
+  font-size: 11px;
+  font-weight: 400;
+  margin-left: 4px;
+  color: var(--text2);
+}
+.wd.sat { color: var(--blue); }
+.wd.sun, .wd.hol { color: var(--danger); }
+.btn-grp { display: flex; gap: 3px; }
+.dbtn {
+  width: 42px; height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border2);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--surface2);
+  color: var(--text3);
+  transition: all 0.1s;
+}
+.dbtn:hover { background: var(--surface); color: var(--text); }
+.dbtn.ok { background: var(--accent-bg); border-color: var(--accent-border); color: var(--accent); }
+.dbtn.tri { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn); }
+.dbtn.ng { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger); }
+
+.sum-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 14px 0;
+}
+.sum-card {
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  text-align: center;
+  border: 1px solid;
+}
+.sum-card .sl { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+.sum-card .sv { font-size: 24px; font-weight: 700; }
+.sum-ok { background: var(--accent-bg); border-color: var(--accent-border); color: var(--accent); }
+.sum-tri { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn); }
+.sum-ng { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger); }
+
+.confirm-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.confirm-tbl th, .confirm-tbl td {
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  text-align: left;
+}
+.confirm-tbl th {
+  background: var(--surface2);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--text2);
+}
+.ctok { color: var(--accent); font-weight: 700; }
+.cttri { color: var(--warn); font-weight: 700; }
+.ctng { color: var(--text3); }
+
+.done-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  border: 2px solid var(--accent-border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+
+@media (max-width: 400px) {
+  .dbtn { width: 36px; }
+  .drow { grid-template-columns: 58px 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="app-header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <rect x="2" y="3" width="14" height="12" rx="2" stroke="white" stroke-width="1.5"/>
+          <path d="M6 2v2M12 2v2" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M2 7h14" stroke="white" stroke-width="1.5"/>
+          <path d="M5 11h2M9 11h2" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>シフト希望入力</h1>
+    </div>
+    <p>毎月の勤務希望をここから提出してください</p>
+  </div>
+
+  <!-- Step 1: 名前・月 -->
+  <div class="screen on" id="s1">
+    <div class="card">
+      <div class="card-title">Step 1 — 名前と対象月を選ぶ</div>
+      <div class="field">
+        <label>名前を選択</label>
+        <div class="chips" id="chip-list"></div>
+        <input type="text" id="name-inp" placeholder="一覧にない場合は直接入力...">
+      </div>
+      <div class="field">
+        <label>対象月</label>
+        <div class="ym-row">
+          <select id="sel-year"></select>
+          <select id="sel-month"></select>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" onclick="startForm()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          希望を入力する
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: 日付入力 -->
+  <div class="screen" id="s2">
+    <div class="form-hdr">
+      <h2 id="f-title"></h2>
+      <span class="meta-pill" id="f-meta"></span>
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="legsq" style="background:var(--accent-bg);border-color:var(--accent-border)"></div>○ 出勤可</div>
+      <div class="leg"><div class="legsq" style="background:var(--warn-bg);border-color:var(--warn-border)"></div>△ 条件あり</div>
+      <div class="leg"><div class="legsq" style="background:var(--danger-bg);border-color:var(--danger-border)"></div>× 不可</div>
+    </div>
+    <div class="bulk-row">
+      <span class="lbl">一括設定:</span>
+      <button class="bbtn" onclick="bulk('ok')">全日○</button>
+      <button class="bbtn" onclick="bulk('ng')">全日×</button>
+      <button class="bbtn" onclick="bulk('wd-ok')">平日○ / 土日×</button>
+      <button class="bbtn" onclick="bulk('reset')">リセット</button>
+    </div>
+    <div class="day-grid" id="day-grid"></div>
+    <div class="btn-row">
+      <button class="btn primary" onclick="goConfirm()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        内容を確認する
+      </button>
+      <button class="btn" onclick="show('s1')">← 戻る</button>
+    </div>
+  </div>
+
+  <!-- Step 3: 確認・ダウンロード -->
+  <div class="screen" id="s3">
+    <div class="card">
+      <div style="text-align:center;margin-bottom:16px">
+        <div class="done-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 11l5 5L18 6" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="font-size:16px;font-weight:700" id="confirm-name"></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px" id="confirm-period"></div>
+      </div>
+      <div class="sum-grid" id="sum-grid"></div>
+      <table class="confirm-tbl" id="confirm-tbl"></table>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn success" onclick="doDownload()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><path d="M7 2v7M4 7l3 3 3-3M2 12h10" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          CSVダウンロード
+        </button>
+        <button class="btn" onclick="show('s2')">← 修正する</button>
+        <button class="btn" onclick="resetAll()">最初に戻る</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+const MEMBERS = ['合澤','井柄','植木','藤生','中元','長野','黒川','本田','兼近','坂田','阿志賀','松本','近藤','河口','小島','京田','戸澤','源島','安藤','杉山','星野'];
+const WD = ['日','月','火','水','木','金','土'];
+const HOLIDAYS = {
+  '2026-01':[1],'2026-02':[11,23],'2026-03':[20],'2026-04':[29],
+  '2026-05':[3,4,5,6],'2026-06':[],'2026-07':[20],'2026-08':[11],
+  '2026-09':[21,22,23],'2026-10':[12],'2026-11':[3,23],'2026-12':[23],
+  '2027-01':[1],'2027-02':[11,23],'2027-03':[20],'2027-04':[29],
+  '2027-05':[3,4,5,6],'2027-07':[19],'2027-08':[11],
+  '2027-09':[20,23],'2027-10':[11],'2027-11':[3,23],'2027-12':[23],
+};
+let st = { name:'', year:0, month:0, days:[] };
+
+function init() {
+  const cl = document.getElementById('chip-list');
+  cl.innerHTML = MEMBERS.map(m =>
+    `<span class="chip" onclick="pickMember(this,'${m}')">${m}</span>`
+  ).join('');
+  const sy = document.getElementById('sel-year');
+  const sm = document.getElementById('sel-month');
+  const now = new Date();
+  for (let y = now.getFullYear(); y <= now.getFullYear() + 1; y++) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y + '年';
+    if (y === now.getFullYear()) o.selected = true;
+    sy.appendChild(o);
+  }
+  for (let m = 1; m <= 12; m++) {
+    const o = document.createElement('option');
+    o.value = m; o.textContent = m + '月';
+    const next = (now.getMonth() + 2 > 12) ? 1 : now.getMonth() + 2;
+    if (m === next) o.selected = true;
+    sm.appendChild(o);
+  }
+  document.getElementById('name-inp').addEventListener('input', function() {
+    st.name = this.value.trim();
+    document.querySelectorAll('.chip').forEach(c =>
+      c.classList.toggle('on', c.textContent === st.name)
+    );
+  });
+}
+
+function pickMember(el, name) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  st.name = name;
+  document.getElementById('name-inp').value = name;
+}
+
+function buildDays(y, m) {
+  const total = new Date(y, m, 0).getDate();
+  const key = `${y}-${String(m).padStart(2,'0')}`;
+  const hols = HOLIDAYS[key] || [];
+  return Array.from({length: total}, (_, i) => {
+    const d = i + 1, wdi = new Date(y, m-1, d).getDay();
+    const isH = hols.includes(d), isWe = wdi === 0 || wdi === 6 || isH;
+    return { d, wdi, isH, isWe, s: 'ng' };
+  });
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startForm() {
+  st.name = document.getElementById('name-inp').value.trim();
+  if (!st.name) { alert('名前を入力または選択してください'); return; }
+  st.year = parseInt(document.getElementById('sel-year').value);
+  st.month = parseInt(document.getElementById('sel-month').value);
+  st.days = buildDays(st.year, st.month);
+  document.getElementById('f-title').textContent = `${st.month}月 シフト希望`;
+  document.getElementById('f-meta').textContent = `${st.name} / ${st.year}年${st.month}月`;
+  renderGrid();
+  show('s2');
+}
+
+function renderGrid() {
+  const g = document.getElementById('day-grid');
+  g.innerHTML = st.days.map((d, i) => {
+    const wl = WD[d.wdi] + (d.isH ? '祝' : '');
+    const wcl = d.wdi === 6 ? 'sat' : (d.wdi === 0 || d.isH) ? 'sun' : '';
+    return `<div class="${d.isWe ? 'drow we' : 'drow'}">
+      <div class="dlabel">${st.month}/${d.d}<span class="wd ${wcl}">${wl}</span></div>
+      <div class="btn-grp">
+        <button class="dbtn${d.s==='ok'?' ok':''}" onclick="setD(${i},'ok')">○</button>
+        <button class="dbtn${d.s==='tri'?' tri':''}" onclick="setD(${i},'tri')">△</button>
+        <button class="dbtn${d.s==='ng'?' ng':''}" onclick="setD(${i},'ng')">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setD(i, s) { st.days[i].s = s; renderGrid(); }
+
+function bulk(mode) {
+  st.days.forEach(d => {
+    if (mode === 'ok') d.s = 'ok';
+    else if (mode === 'ng' || mode === 'reset') d.s = 'ng';
+    else if (mode === 'wd-ok') d.s = d.isWe ? 'ng' : 'ok';
+  });
+  renderGrid();
+}
+
+function goConfirm() {
+  const SL = { ok:'○', tri:'△', ng:'×' };
+  const okN = st.days.filter(d => d.s === 'ok').length;
+  const triN = st.days.filter(d => d.s === 'tri').length;
+  const ngN = st.days.filter(d => d.s === 'ng').length;
+  document.getElementById('confirm-name').textContent = st.name + ' さん';
+  document.getElementById('confirm-period').textContent = `${st.year}年${st.month}月（全${st.days.length}日）`;
+  document.getElementById('sum-grid').innerHTML =
+    `<div class="sum-card sum-ok"><div class="sl">○ 出勤可</div><div class="sv">${okN}</div></div>` +
+    `<div class="sum-card sum-tri"><div class="sl">△ 条件付き</div><div class="sv">${triN}</div></div>` +
+    `<div class="sum-card sum-ng"><div class="sl">× 不可</div><div class="sv">${ngN}</div></div>`;
+  const rows = st.days.map(d => {
+    const wl = WD[d.wdi] + (d.isH ? '祝' : '');
+    const cls = d.s === 'ok' ? 'ctok' : d.s === 'tri' ? 'cttri' : 'ctng';
+    return `<tr><td>${st.month}/${d.d}（${wl}）</td><td class="${cls}">${SL[d.s]}</td></tr>`;
+  }).join('');
+  document.getElementById('confirm-tbl').innerHTML =
+    `<thead><tr><th>日付</th><th>希望</th></tr></thead><tbody>${rows}</tbody>`;
+  show('s3');
+}
+
+function doDownload() {
+  const SL = { ok:'○', tri:'△', ng:'×' };
+  const m = String(st.month).padStart(2, '0');
+  const hdrs = ['タイムスタンプ', '名前'];
+  st.days.forEach(d => {
+    const wl = WD[d.wdi] + (d.isH ? '（祝）' : '');
+    hdrs.push(`${st.month}/${d.d}（${wl}）希望（ 例：◯ / × △ orコメント）`);
+  });
+  const vals = [new Date().toLocaleString('ja-JP'), st.name];
+  st.days.forEach(d => vals.push(SL[d.s]));
+  const csv = [hdrs, vals].map(r =>
+    r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')
+  ).join('\r\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `シフト希望_${st.name}_${st.year}${m}.csv`;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+}
+
+function resetAll() {
+  st = { name:'', year:0, month:0, days:[] };
+  document.getElementById('name-inp').value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  show('s1');
+}
+
+init();
+</script>
+</body>
+</html>
